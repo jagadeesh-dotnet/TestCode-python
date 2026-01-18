@@ -1,0 +1,44 @@
+<div class="live-container">
+    <div class="header">
+        <h2>Live Recording & Transcription</h2>
+        <div class="controls">
+            <div class="timer" *ngIf="session">{{ formatTime(recordingTimer) }}</div>
+            <button class="btn-start" *ngIf="!session" (click)="startRecording()" [disabled]="isRequesting">
+                Start Live Recording
+            </button>
+            <button class="btn-stop" *ngIf="session" (click)="stopRecording()">
+                Stop Recording
+            </button>
+        </div>
+    </div>
+
+    <div class="status-bar" *ngIf="statusMsg || errorMsg">
+        <span class="status" *ngIf="statusMsg">{{ statusMsg }}</span>
+        <span class="error" *ngIf="errorMsg">{{ errorMsg }}</span>
+    </div>
+
+    <div class="content-grid">
+        <!-- Live Transcript Section -->
+        <div class="panel transcript-panel">
+            <h3>Live Transcription</h3>
+            <div class="transcript-display">
+                <span class="final-text">{{ fullTranscript }}</span>
+                <span class="partial-text">{{ partialTranscript }}</span>
+            </div>
+        </div>
+
+        <!-- Diarization Section -->
+        <div class="panel diarization-panel">
+            <h3>Speaker Diarization (Updates every ~10s)</h3>
+            <div class="segments-list">
+                <div class="segment" *ngFor="let seg of speakerSegments">
+                    <div class="seg-time">{{ formatSegmentTime(seg.start) }} - {{ formatSegmentTime(seg.end) }}</div>
+                    <div class="seg-speaker">{{ seg.speaker }}</div>
+                </div>
+                <div *ngIf="speakerSegments.length === 0" class="no-data">
+                    No speaker segments identified yet...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

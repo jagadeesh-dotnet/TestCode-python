@@ -1,0 +1,91 @@
+recorder api
+
+@router.post("/mic/start")
+async def start_mic_recording(request: MicRecordingRequest, db: Session = Depends(get_db)):
+    """Start a new microphone recording session"""
+    try:
+        session_id, filepath = recorder_service.start_mic_recording(request.station_name)
+        
+        # Create database record
+        recording = models.Recording(
+            radio_station=request.station_name,
+            start_time=datetime.datetime.now(),
+            status="recording",
+            source_type="microphone",
+            session_id=session_id,
+            file_path=filepath
+        )
+        db.add(recording)
+        db.commit()
+        db.refresh(recording)
+        
+        return {
+            "session_id": session_id,
+            "recording_id": recording.id,
+            "message": "Microphone recording started"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/mic/upload-chunk/{session_id}")
+async def upload_audio_chunk(session_id: str, file: UploadFile = File(...)):
+    """Upload an audio chunk for an active recording session"""
+    try:
+        audio_data = await file.read()
+        success = recorder_service.append_audio_chunk(session_id, audio_data)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        return {"message": "Chunk uploaded successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/mic/live-status/{session_id}")
+async def get_mic_live_status(session_id: str):
+    """Get live transcription status for an active session"""
+    status = recorder_service.get_live_status(session_id)
+    if not status and session_id not in recorder_service.mic_sessions:
+         raise HTTPException(status_code=404, detail="Session not found")
+    return status
+
+@router.post("/mic/stop/{session_id}")
+async def stop_mic_recording(session_id: str, db: Session = Depends(get_db)):
+    """Stop microphone recording and trigger transcription"""
+    try:
+        filepath = recorder_service.finalize_mic_recording(session_id)
+        
+        if not filepath:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        # Update database record
+        recording = db.query(models.Recording).filter(
+            models.Recording.session_id == session_id
+        ).first()
+        
+        if not recording:
+            raise HTTPException(status_code=404, detail="Recording not found in database")
+        
+        # Calculate duration
+        duration = (datetime.datetime.now() - recording.start_time).total_seconds()
+        recording.duration = duration
+        recording.status = "pending"
+        db.commit()
+        
+        # Trigger transcription processing - MOVED TO SCHEDULER
+        # process_recording(recording.id)
+        
+        return {
+            "message": "Recording stopped and queued for processing",
+            "recording_id": recording.id,
+            "filepath": filepath
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+

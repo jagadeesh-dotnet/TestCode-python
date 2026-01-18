@@ -1,0 +1,160 @@
+.live-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Inter', sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header h2 {
+    margin: 0;
+    color: #1a1a1a;
+    font-size: 1.5rem;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.timer {
+    font-family: monospace;
+    font-size: 1.5rem;
+    color: #e63946;
+    background: #fdf2f2;
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+button {
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-start {
+    background: #2a9d8f;
+    color: white;
+}
+
+.btn-start:hover {
+    background: #21867a;
+}
+
+.btn-stop {
+    background: #e63946;
+    color: white;
+}
+
+.btn-stop:hover {
+    background: #d62828;
+}
+
+.btn-start:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.status-bar {
+    margin-bottom: 20px;
+    text-align: center;
+    height: 24px;
+}
+
+.status {
+    color: #2a9d8f;
+}
+
+.error {
+    color: #e63946;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.panel {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel h3 {
+    margin-top: 0;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+}
+
+.transcript-display {
+    flex: 1;
+    overflow-y: auto;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.final-text {
+    color: #333;
+}
+
+.partial-text {
+    color: #888;
+    font-style: italic;
+    margin-left: 5px;
+}
+
+.segments-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.segment {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid #457b9d;
+}
+
+.seg-time {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.seg-speaker {
+    font-weight: 600;
+    color: #1d3557;
+}
+
+.no-data {
+    color: #999;
+    text-align: center;
+    margin-top: 40px;
+    font-style: italic;
+}

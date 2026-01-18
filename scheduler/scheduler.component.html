@@ -1,0 +1,42 @@
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Scheduler</h2>
+        <button class="btn btn-primary" (click)="openAddModal()">Add Schedule</button>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Time</th>
+                <th>Details</th>
+                <th>Stream</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let s of schedules">
+                <td>{{ s.name }}</td>
+                <td>
+                    <span class="badge" [ngClass]="s.schedule_type === 'recurring' ? 'bg-info' : 'bg-warning'">
+                        {{ s.schedule_type }}
+                    </span>
+                </td>
+                <td>{{ s.start_time }} - {{ s.end_time }}</td>
+                <td>
+                    <span *ngIf="s.schedule_type === 'one_time'">Date: {{ s.specific_date }}</span>
+                    <span *ngIf="s.schedule_type === 'recurring'">Days: {{ s.days_of_week }}</span>
+                </td>
+                <td class="text-truncate" style="max-width: 200px;" title="{{s.stream_url}}">{{ s.stream_url }}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditModal(s)">Edit</button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteSchedule(s.id!)">Delete</button>
+                </td>
+            </tr>
+            <tr *ngIf="schedules.length === 0">
+                <td colspan="6" class="text-center text-muted">No schedules found.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
